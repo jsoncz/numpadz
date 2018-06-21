@@ -1,0 +1,15 @@
+numpadz is written in python by Jason Byers on the 21.6.2018.
+--------------------------------------------------------------
+A simple program to use your numpad as a simple sampler. Did you ever mash up youtube tracks with the numpad like I did?
+I enjoyed it so much I created this program to share the joy! :)
+
+usage: python numpads.py
+use numpad to play samples, use + or - to cycle between sample packs.
+
+requirements: pygame, ffmpeg 
+
+pack builder: (script requires a dict file - by default it uses: /usr/share/dict/cracklib-small - you can modify this in the convert.sh script to solve if you have any issues.)
+to build your own sample pack, check the wav folder, add 9 random wavs to the folder and run 'sh createpack.sh'
+those wavs will be converted and moved to a folder with a randomly generated name. The pack will automatically be added to Numpadz to play with.
+
+included are some sample packs I have compiled from random free packs (don't sue me please).
