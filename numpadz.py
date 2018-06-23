@@ -32,7 +32,8 @@ while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
         #choose pack
-        if event.type == pygame.KEYDOWN:
+        if (event.type == pygame.KEYDOWN and
+                event.key in (pygame.K_KP_PLUS, pygame.K_KP_MINUS)):
             colour
             if event.key == pygame.K_KP_PLUS:
                 selectedPack += 1
