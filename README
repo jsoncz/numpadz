@@ -5,6 +5,8 @@ I enjoyed it so much I created this program to share the joy! :)
 
 usage: python numpadz.py
 use numpad to play samples, use + or - to cycle between sample packs.
+use * and / to cycle through GIF packs (no script to create gifpacks exist yet, but I've created some bash scripts to rename and 
+resize the gifs
 
 requirements: pygame, ffmpeg 
 
