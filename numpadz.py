@@ -1,130 +1,122 @@
-import sys, pygame, random
+import random
+import sys
+import pygame
+
+
 pygame.mixer.pre_init(44100, 16, 4, 2048)
 pygame.init()
 
-size = width, height = 320, 240
-speed = [2, 2]
-colour = 0,0,0
-colour2 = 0,0,0
+SIZE = WIDTH, HEIGHT = 320, 240
 
 try:
-    packs = []
-    packs = [line.rstrip('\n') for line in open('wav/packlist.txt')]
-    print ("NUMPADZ - Cycle through Packs with + / -")
-    print (packs)
+    PACKS = []
+    PACKS = [line.rstrip('\n') for line in open('wav/packlist.txt')]
+    print("NUMPADZ - Cycle through PACKS with + / -")
+    print(PACKS)
+except IOError:
+    print("could not open packlist, check you run from the current dir")
+    sys.exit()
 
-except:
-    print ("could not open packlist, check you run from the current dir")
-
-#giflist
+# GIFLIST
 try:
-    gifpacks = []
-    gifpacks = [line.rstrip('\n') for line in open('gif/giflist.txt')]
-    print ("NUMPADZ - Cycle through GIFS with / and * -")
-    print (gifpacks)
+    GIFPACKS = []
+    GIFPACKS = [line.rstrip('\n') for line in open('gif/giflist.txt')]
+    print("NUMPADZ - Cycle through GIFS with / and * -")
+    print(GIFPACKS)
+except IOError:
+    print("could not open giflist, check you run from the current dir")
 
-except:
-    print ("could not open giflist, check you run from the current dir")
+# PACK VARIABLES
+SELECTEDPACK = 0
+SELECTEDGIFPACK = 0
+P = PACKS[SELECTEDPACK]
+P = PACKS[SELECTEDPACK]
+GP = GIFPACKS[SELECTEDGIFPACK]
 
-#PACK VARIABLES
-selectedPack = 0
-selectedGifPack = 0
-p = packs[selectedPack]
-p = packs[selectedPack]
-gp = gifpacks[selectedGifPack]
-
-#WINDOW
-screen = pygame.display.set_mode(size)
+# WINDOW
+SCREEN = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('NumPADZ')
 
-#FILES
-sounds = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(p, i))
+# FILES
+SOUNDS = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(P, i))
           for i in range(1, 10)]
-gifs = [pygame.image.load("gif/{}/{:04}.gif".format(gp, i))
-          for i in range(1, 10)]
+GIFS = [pygame.image.load("gif/{}/{:04}.gif".format(GP, i))
+        for i in range(1, 10)]
 
 KEYS = [pygame.K_KP1, pygame.K_KP2, pygame.K_KP3, pygame.K_KP4, pygame.K_KP5,
         pygame.K_KP6, pygame.K_KP7, pygame.K_KP8, pygame.K_KP9]
 
 
 def image(gif):
-    image_rect = gif.get_rect().center
-    screen.blit(gif,(1,1))
+    SCREEN.blit(gif, (1, 0))
 
-def getSampleLen():
-#get sample lengths
-    
-    for i in sounds:
-        smpLen = round(i.get_length(),1)
-        print ("Num",sounds.index(i)+1,"-",smpLen) 
+
+def getsamplelen():
+    # GET SAMPLE LENGTHS
+    for i in SOUNDS:
+        samplelength = round(i.get_length(), 1)
+        print("Num", SOUNDS.index(i) + 1, "-", samplelength)
 
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
         if event.type == pygame.KEYDOWN:
 
-            #STOP ALL SOUNDS IF ZERO PRESSED
+            # STOP ALL SOUNDS IF ZERO PRESSED
             if event.key == pygame.K_KP0:
-                    print("stopping all sounds with Num Zero")
-                    pygame.mixer.stop()
+                print("stopping all SOUNDS with Num Zero")
+                pygame.mixer.stop()
 
-            #SELECT GIFPACK WITH * AND /
+            # SELECT GIFPACK WITH * AND /
             if event.key == pygame.K_KP_MULTIPLY:
+                SELECTEDGIFPACK += 1
                 try:
-                    selectedGifPack += 1
-                    gp = gifpacks[selectedGifPack]
-                    print(gp)
-                except (IndexError):
-                    selectedGifPack = 0
-                    gp = gifpacks[selectedGifPack]
-                    print(gp)
-                gifs = [pygame.image.load("gif/{}/{:04}.gif".format(gp, i))
-                        for i in range(1, 10)]
+                    GP = GIFPACKS[SELECTEDGIFPACK]
+                except IndexError:
+                    SELECTEDGIFPACK = 0
+                    GP = GIFPACKS[SELECTEDGIFPACK]
+                print(GP)
 
+                GIFS = [pygame.image.load("gif/{}/{:04}.gif".format(GP, i))
+                        for i in range(1, 10)]
 
             if event.key == pygame.K_KP_DIVIDE:
+                SELECTEDGIFPACK -= 1
                 try:
-                    selectedGifPack -= 1
-                    gp = gifpacks[selectedGifPack]
-                    print(gp)
-                except (IndexError):
-                    selectedGifPack = 0
-                    gp = gifpacks[selectedGifPack]
-                    print(gp)
-                gifs = [pygame.image.load("gif/{}/{:04}.gif".format(gp, i))
+                    GP = GIFPACKS[SELECTEDGIFPACK]
+                except IndexError:
+                    SELECTEDGIFPACK = 0
+                    GP = GIFPACKS[SELECTEDGIFPACK]
+                print(GP)
+                GIFS = [pygame.image.load("gif/{}/{:04}.gif".format(GP, i))
                         for i in range(1, 10)]
-                
-        #CHOOSE SAMPLEPACK
+        # CHOOSE SAMPLEPACK
         if (event.type == pygame.KEYDOWN and
                 event.key in (pygame.K_KP_PLUS, pygame.K_KP_MINUS)):
 
             if event.key == pygame.K_KP_PLUS:
+                SELECTEDPACK += 1
                 try:
-                    selectedPack += 1
-                    p = packs[selectedPack]
-                    print(p)
+                    P = PACKS[SELECTEDPACK]
                 except IndexError:
-                    selectedPack = 0
-                    p = packs[selectedPack]
-                    print(p)
-                sounds = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(p, i))
-                      for i in range(1, 10)]
-               
+                    SELECTEDPACK = 0
+                    P = PACKS[SELECTEDPACK]
+                print(P)
+                SOUNDS = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(P, i))
+                          for i in range(1, 10)]
 
             elif event.key == pygame.K_KP_MINUS:
+                SELECTEDPACK -= 1
                 try:
-                    selectedPack -= 1
-                    p = packs[selectedPack]
-                    print(p)
+                    P = PACKS[SELECTEDPACK]
                 except IndexError:
-                    selectedPack = 0
-                    p = packs[selectedPack]
-                    print(p)
-                sounds = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(p, i))
-                      for i in range(1, 10)]
-           
-            
-            getSampleLen()
+                    SELECTEDPACK = 0
+                    P = PACKS[SELECTEDPACK]
+                    print(P)
+                SOUNDS = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(P, i))
+                          for i in range(1, 10)]
+
+            getsamplelen()
 
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
             try:
@@ -134,20 +126,13 @@ while 1:
                 pass
             else:
                 # User did press a numpad key, process it
-                sound = sounds[key_index]
-                gifSel = gifs[key_index]
+                sound = SOUNDS[key_index]
+                gifSel = GIFS[key_index]
                 if event.type == pygame.KEYDOWN:
                     sound.play(-1)
                     image(gifSel)
-                                  
-               
                 elif event.type == pygame.KEYUP:
                     sound.stop()
-                    colour = random.randint(0,255),random.randint(0,255),random.randint(0,255)
-                    screen.fill(colour) 
-
-                    
-                
+                    colour = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
+                    SCREEN.fill(colour)
         pygame.display.flip()
-
-   
