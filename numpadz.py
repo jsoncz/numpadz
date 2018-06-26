@@ -74,6 +74,9 @@ while 1:
                 print("stopping all SOUNDS with Num Zero")
                 pygame.mixer.stop()
 
+            #SAMPLE HOLD
+            if event.key == pygame.K_KP_ENTER:
+                SOUNDS = get_sounds(P)
             # SELECT GIFPACK WITH * AND /
             if event.key == pygame.K_KP_MULTIPLY:
                 SELECTEDGIFPACK += 1
