@@ -100,6 +100,7 @@ def drawsound(key_index):
     if record or play:
         for i in range(len(lastpos)):
             keypos = key_indexs[i]*20
+            #if lastpos[i]
             try:
                 soundrect = pygame.draw.rect(SCREEN,COLOUR,[lastpos[i],keypos,recordlen[i]*(speed*30),10])
                 print("POSITION",lastpos[i])
