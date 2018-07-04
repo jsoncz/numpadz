@@ -1,7 +1,15 @@
 numpadz is written in python by Jason Byers (started) on the 21.6.2018.
 --------------------------------------------------------------
+If you end up using or enjoying this free piece of work, please let me know - I would love to hear from you.
+Also if you are kind enough to support the project buy me a coffee or say thanks through paypal: jsoncz@gmail.com
+--------------------------------------------------------------
+
+- What is it?
 A simple program to use your numpad as a simple sampler. Did you ever mash up youtube tracks with the numpad like I did?
 I enjoyed it so much I created this program to share the joy! :)
+
+- Screenshot
+check numpadz.png
 
 usage: python numpadz.py
 use numpad to play samples, use + or - to cycle between sample packs.
