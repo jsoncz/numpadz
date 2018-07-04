@@ -18,6 +18,10 @@ usage: instead of gifs, and gifpacks you have recording mode which uses NumLock 
 ENTER holds whatever sample is being played without adding to the recorder
 0 stops all sounds
 
+TO DO:
+I might need help moving from pygame to another audio library as it seems a bit CPU intensive, they way that I am loading so many 
+wav files simultaneously.
+Multi threading?
 
 Tricks:
 You can switch sample pack while still holding a key - this will continue to loop that key, allowing some looping without holding 
