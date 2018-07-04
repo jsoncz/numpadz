@@ -3,7 +3,7 @@ import sys
 import pygame
 import time
 
-pygame.mixer.pre_init(44100, 16, 16, 1024)
+pygame.mixer.pre_init(44100, 16, 16, 2048)
 pygame.mixer.init()
 
 start = time.time()
@@ -18,6 +18,7 @@ RED = (255, 0, 0)
 speed = 5
 
 POS = 1
+startloop = 0
 lastpos = []
 key_indexs = []
 recpack = []
@@ -71,13 +72,13 @@ def getsamplelen():
         print("Num", SOUNDS.index(i) + 1, "-", samplelength)
 
 def grid():
-    W=int(18-speed)
-    H=20
-    MARGIN=15-speed
+    W=16
+    H=16
+    MARGIN=8
     SCREEN.fill(BLACK)
-    for column in range(5+MARGIN,300,W+MARGIN):
+    for column in range(startloop+MARGIN,300,W+MARGIN):
         pygame.draw.rect(SCREEN,WHITE, [column,0+MARGIN,W,H])
-        for row in range(0+MARGIN,150,W+MARGIN):
+        for row in range(0+MARGIN,160,W+MARGIN):
             pygame.draw.rect(SCREEN,WHITE,[column,row,W,H])
 
 def drawsound(key_index):
@@ -96,6 +97,7 @@ def playrecording():
     for i in range(len(recpack)):
         try:
             recsnd = pygame.mixer.Sound("wav/{}/{:04}.wav".format(recpack[i], reckey[i]))
+            
             if POS == lastpos[i]:
                 ms = int(reclen[i]*1000)
                 recsnd.play(-1,maxtime=ms)
@@ -119,7 +121,7 @@ while 1:
                 if record:
                     record = False
                     print ("STOPPED RECORDING")
-                    pygame.mixer.stop()
+                    
                 else:
                     record = True
                     play = True
@@ -130,7 +132,7 @@ while 1:
             if event.key == pygame.K_KP0:
                 print("stopping all SOUNDS with Num Zero")
                 pygame.mixer.quit()
-                pygame.mixer.pre_init(44100, 16, 16, 1024)
+                pygame.mixer.pre_init(44100, 16, 16, 2048)
                 pygame.mixer.init()
 
             if event.key == pygame.K_KP_MULTIPLY:
@@ -143,19 +145,25 @@ while 1:
                 except IndexError:
                     pass
 
-            #SPEED CONTROL
+            #SPEED CONTROL / EXPERIMENTAL STARTLOOP
             if event.key == pygame.K_PAGEUP:
-                if speed <= 5:
-                    speed+=1                   
-                else:
-                    print("Speed is at maximum:",speed)
-                print("Speed:",speed)
+                if startloop <= 100:
+                    startloop+=10
+                    print("StartLoop set:",startloop)
+                #if speed <= 5:
+                #    speed+=1                   
+                #else:
+                #    print("Speed is at maximum:",speed)
+                #print("Speed:",speed)
             if event.key == pygame.K_PAGEDOWN:
-                if speed >= 3:
-                    speed-=1
-                else:
-                    print("Speed is at minimum:",speed)
-                print("Speed:",speed)
+                if startloop >= 10:
+                    startloop-=10
+                    print("StartLoop set:",startloop)
+                #if speed >= 3:
+                #    speed-=1
+                #else:
+                #    print("Speed is at minimum:",speed)
+                #print("Speed:",speed)
 
             #SAMPLE HOLD
             if event.key == pygame.K_KP_ENTER:
@@ -200,7 +208,7 @@ while 1:
                     SELECTEDPACK = 0
                     P = PACKS[SELECTEDPACK]
                 SOUNDS = get_sounds(P)
-            print(P)
+                print(P)
             getsamplelen()
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
             try:
@@ -234,7 +242,7 @@ while 1:
         curpos = POS
         pygame.draw.rect(SCREEN, COLOUR, [curpos,3,5,180])
     else:
-        POS = 0
+        POS = startloop
     drawsound(key_indexs)
     if play:
         playrecording()
