@@ -1,3 +1,19 @@
+'''
+NumpadZ is written and maintained by Jason Byers aka jsoncz / smjase
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
 import random
 import sys
 import pygame
@@ -72,17 +88,17 @@ def getsamplelen():
         print("Num", SOUNDS.index(i) + 1, "-", samplelength)
 
 def grid():
-    W=16
+    W=18
     H=16
     MARGIN=8
     SCREEN.fill(BLACK)
-    for column in range(startloop+MARGIN,300,W+MARGIN):
+    for column in range(startloop+MARGIN,WIDTH,W+MARGIN):
         pygame.draw.rect(SCREEN,WHITE, [column,0+MARGIN,W,H])
         for row in range(0+MARGIN,160,W+MARGIN):
             pygame.draw.rect(SCREEN,WHITE,[column,row,W,H])
 
 def drawsound(key_index):
-    if record or play:
+    if play:
         for i in range(len(lastpos)):
             keypos = key_indexs[i]*20
             try:
@@ -94,15 +110,16 @@ def get_rect(self):
     return pygame.Rect(self.x, self.y, self.width, self.height)
 
 def playrecording():
-    for i in range(len(recpack)):
-        try:
-            recsnd = pygame.mixer.Sound("wav/{}/{:04}.wav".format(recpack[i], reckey[i]))
-            
-            if POS == lastpos[i]:
-                ms = int(reclen[i]*1000)
-                recsnd.play(-1,maxtime=ms)
-        except IndexError:
-            pass
+    if play:
+        for i in range(len(recpack)):
+            try:
+                recsnd = pygame.mixer.Sound("wav/{}/{:04}.wav".format(recpack[i], reckey[i]))
+
+                if POS == lastpos[i]:
+                    ms = int(reclen[i]*1000)
+                    recsnd.play(-1,maxtime=ms)
+            except IndexError:
+                pass
 
 while 1:
     if record:
@@ -120,6 +137,7 @@ while 1:
             if event.key == pygame.K_NUMLOCK:
                 if record:
                     record = False
+
                     print ("STOPPED RECORDING")
                     
                 else:
@@ -182,6 +200,7 @@ while 1:
             #PLAYBACK MODE
             if event.key == pygame.K_KP_DIVIDE:
                 if play:
+                    record = False
                     play = False
                 else:
                     play = True
@@ -244,8 +263,7 @@ while 1:
     else:
         POS = startloop
     drawsound(key_indexs)
-    if play:
-        playrecording()
+    playrecording()
     #SCREEN.blit(logo, (1,170))
     SCREEN.blit(logosurface, (2,170))
     pygame.display.flip()
