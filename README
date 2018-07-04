@@ -1,4 +1,4 @@
-numpadz is written in python by Jason Byers on the 21.6.2018.
+numpadz is written in python by Jason Byers (started) on the 21.6.2018.
 --------------------------------------------------------------
 A simple program to use your numpad as a simple sampler. Did you ever mash up youtube tracks with the numpad like I did?
 I enjoyed it so much I created this program to share the joy! :)
@@ -8,6 +8,16 @@ use numpad to play samples, use + or - to cycle between sample packs.
 use * and / to cycle through GIF packs (no script to create gifpacks exist yet, but I've created some bash scripts to rename and 
 resize the gifs.
 Press 0 on Numpad to stop all sounds
+
+Numpadz_02.py is in development which features a recording mode.
+usage: instead of gifs, and gifpacks you have recording mode which uses NumLock to toggle recording,
+/ to toggle playback of recorded data
+* undo
+. clear pattern
++ / - is still to cycle sample packs
+ENTER holds whatever sample is being played without adding to the recorder
+0 stops all sounds
+
 
 Tricks:
 You can switch sample pack while still holding a key - this will continue to loop that key, allowing some looping without holding 
