@@ -17,7 +17,7 @@ use * and / to cycle through GIF packs (no script to create gifpacks exist yet, 
 resize the gifs.
 Press 0 on Numpad to stop all sounds
 
-Numpadz_02.py is in development which features a recording mode.
+!!!Numpadz_02.py is in development which features a recording mode.
 usage: instead of gifs, and gifpacks you have recording mode which uses NumLock to toggle recording,
 / to toggle playback of recorded data
 * undo
@@ -25,16 +25,22 @@ usage: instead of gifs, and gifpacks you have recording mode which uses NumLock 
 + / - is still to cycle sample packs
 ENTER holds whatever sample is being played without adding to the recorder
 0 stops all sounds
+#secret buttons ;)
+INSERT / DEL will move speed up and down
+PGUP/PGDOWN changes the pattern length / start loop position
 
 TO DO:
 I might need help moving from pygame to another audio library as it seems a bit CPU intensive, they way that I am loading so many 
 wav files simultaneously.
-Multi threading?
+Multi threading? (Tried running with threading mode)
 
 Tricks:
 You can switch sample pack while still holding a key - this will continue to loop that key, allowing some looping without holding 
 the button
 
+Issues:
+If your cpu is going crazy, build pygame from source as it has a bug with pymixer and cpu usage if you use pygame from pip.
+Also, if your performance is bad, edit the source and search/replace 44100 with 22050 - this might help.
 
 requirements: pygame, ffmpeg 
 

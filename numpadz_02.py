@@ -1,10 +1,9 @@
-'''
-NumpadZ is written and maintained by Jason Byers aka jsoncz / smjase
+"""
+NumpadZ is written and maintained by Jason Byers aka jsoncz / smjase.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    the Free Software Foundation, either version 3 of the License, or any later version.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +12,12 @@ NumpadZ is written and maintained by Jason Byers aka jsoncz / smjase
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-'''
-import random
+"""
+
 import sys
 import pygame
 import time
+from threading import Thread
 
 pygame.mixer.pre_init(44100, 16, 16, 2048)
 pygame.mixer.init()
@@ -31,7 +31,10 @@ WHITE = (255, 185, 55)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
-speed = 5
+#OPTIONS
+speed = 10
+quantize = True
+
 
 POS = 1
 startloop = 0
@@ -42,6 +45,7 @@ reclen = []
 reckey = []
 record = False
 play = True
+playbackrun = True
 clock = pygame.time.Clock()
 
 
@@ -66,9 +70,10 @@ pygame.display.set_caption('NumPADZ')
 SCREEN.set_alpha(None)
 logo = pygame.image.load("logo.png").get_rect()
 logosurface = pygame.Surface((logo.width, logo.height))
-logosurface.blit(pygame.image.load("logo.png"), logo)
-
-
+try:
+    logosurface.blit(pygame.image.load("logo.png"), logo)
+except pygame.error:
+    pass
 # FILES
 SOUNDS = [pygame.mixer.Sound("wav/{}/{:04}.wav".format(P, i))
           for i in range(1, 10)]
@@ -89,19 +94,22 @@ def getsamplelen():
 
 def grid():
     W=18
-    H=16
+    H=14
     MARGIN=8
     SCREEN.fill(BLACK)
-    for column in range(startloop+MARGIN,WIDTH,W+MARGIN):
-        pygame.draw.rect(SCREEN,WHITE, [column,0+MARGIN,W,H])
-        for row in range(0+MARGIN,160,W+MARGIN):
+    for column in range(startloop+MARGIN,WIDTH+MARGIN,W+MARGIN):
+        pygame.draw.rect(SCREEN,WHITE, [column,MARGIN,W,H])
+        for row in range(MARGIN,165,W+2):
             pygame.draw.rect(SCREEN,WHITE,[column,row,W,H])
 
 def drawsound(key_index):
     if play:
         for i in range(len(lastpos)):
-            keypos = key_indexs[i]*20
+            
+
             try:
+                 #keypos is which row to draw on
+                keypos = key_indexs[i]*20
                 soundrect = pygame.draw.rect(SCREEN,COLOUR,[lastpos[i],keypos,reclen[i]*(speed*30),10])
             except IndexError:
                 pass
@@ -110,24 +118,32 @@ def get_rect(self):
     return pygame.Rect(self.x, self.y, self.width, self.height)
 
 def playrecording():
-    if play:
+    if play and playbackrun:
         for i in range(len(recpack)):
             try:
                 recsnd = pygame.mixer.Sound("wav/{}/{:04}.wav".format(recpack[i], reckey[i]))
-
                 if POS == lastpos[i]:
                     ms = int(reclen[i]*1000)
                     recsnd.play(-1,maxtime=ms)
             except IndexError:
                 pass
 
+def round_down(num, divisor):
+    return num - (num%divisor)
+
+def stopsounds():
+    pygame.mixer.quit()
+    pygame.mixer.pre_init(44100, 16, 16, 2048)
+    pygame.mixer.init()
+
 while 1:
     if record:
         COLOUR = RED
     else:
         COLOUR = GREEN
-    POS+=speed
-    clock.tick(25)
+    if playbackrun:
+        POS+=speed
+    clock.tick(30)
 
 
     for event in pygame.event.get():
@@ -139,19 +155,39 @@ while 1:
                     record = False
 
                     print ("STOPPED RECORDING")
-                    
+
                 else:
                     record = True
                     play = True
                     print ("STARTED RECORDING")
 
+            #PLAYBACK RUNNING / SCROBBLE
+            if event.key == pygame.K_LEFT:
+                if not playbackrun:
+                    POS-=speed
+                    if POS <= 1:
+                        POS = WIDTH
+            if event.key == pygame.K_RIGHT:
+                if not playbackrun:
+                    POS+=speed
+                    if POS >= WIDTH:
+                        POS = 0
+
+
+
+            if event.key == pygame.K_HOME:
+                if playbackrun:
+                    playbackrun = False
+                    stopsounds()
+                else:
+                    playbackrun = True
+                print("Playback running:", playbackrun)
+
 
             # STOP ALL SOUNDS IF ZERO PRESSED
             if event.key == pygame.K_KP0:
-                print("stopping all SOUNDS with Num Zero")
-                pygame.mixer.quit()
-                pygame.mixer.pre_init(44100, 16, 16, 2048)
-                pygame.mixer.init()
+                print("Stopping all SOUNDS with Num Zero")
+                stopsounds()
 
             if event.key == pygame.K_KP_MULTIPLY:
                 try:
@@ -168,20 +204,23 @@ while 1:
                 if startloop <= 100:
                     startloop+=10
                     print("StartLoop set:",startloop)
-                #if speed <= 5:
-                #    speed+=1                   
-                #else:
-                #    print("Speed is at maximum:",speed)
-                #print("Speed:",speed)
+           
             if event.key == pygame.K_PAGEDOWN:
                 if startloop >= 10:
                     startloop-=10
                     print("StartLoop set:",startloop)
-                #if speed >= 3:
-                #    speed-=1
-                #else:
-                #    print("Speed is at minimum:",speed)
-                #print("Speed:",speed)
+               
+            if event.key == pygame.K_INSERT:
+                if speed <= 20:
+                    speed+=5
+                else:
+                    print("Speed is at maximum:",speed)
+
+            if event.key == pygame.K_DELETE:
+                if speed >= 10:
+                    speed-=5
+                else:
+                    print("Speed is at minimum:",speed)
 
             #SAMPLE HOLD
             if event.key == pygame.K_KP_ENTER:
@@ -197,6 +236,8 @@ while 1:
                     reckey = []
                 except IndexError:
                     pass
+
+
             #PLAYBACK MODE
             if event.key == pygame.K_KP_DIVIDE:
                 if play:
@@ -241,7 +282,27 @@ while 1:
                 if event.type == pygame.KEYDOWN:
                     curpos = POS
                     if record:
-                        lastpos.append(curpos)
+                        
+                        #QUANTIZE But I don't know what I'm thinking...
+                        #if curpos is not a multiple of speed then shift the stored position to nearest multiple of speed.
+                        if quantize:
+                            print(curpos)
+                            print(curpos%speed)
+                            if not curpos%speed:
+                                print(curpos)
+                                #in quantize mode, if you hit a sample right near the end, shift it to beginning
+                                if curpos >= 309:
+                                    curpos = startloop
+                                qpos = round_down(curpos,speed)
+                                print("position rounded down:", qpos)
+                                lastpos.append(qpos)
+                                print("position added:",lastpos[-1])
+                            
+                            else:
+                                lastpos.append(curpos)
+                        else:
+                            lastpos.append(curpos)
+
                         key_indexs.append(key_index)
                         smptimepos = time.time()
                         smpstarted = smptimepos - start
@@ -256,14 +317,16 @@ while 1:
                         reclen.append(round(smpstop - smpstart,2))
                         reckey.append(key_index+1)
     pygame.event.pump()
-    grid()
+    t1 = Thread(target=grid())
+    t1.start()
     if POS <= WIDTH:
         curpos = POS
-        pygame.draw.rect(SCREEN, COLOUR, [curpos,3,5,180])
+        rects = pygame.draw.rect(SCREEN, COLOUR, [curpos,3,5,180])
     else:
         POS = startloop
     drawsound(key_indexs)
-    playrecording()
+    t = Thread(target=playrecording())
+    t.start()
     #SCREEN.blit(logo, (1,170))
     SCREEN.blit(logosurface, (2,170))
-    pygame.display.flip()
+    pygame.display.update()
