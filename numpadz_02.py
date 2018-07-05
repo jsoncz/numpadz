@@ -282,27 +282,14 @@ while 1:
                 if event.type == pygame.KEYDOWN:
                     curpos = POS
                     if record:
-                        
-                        #QUANTIZE But I don't know what I'm thinking...
-                        #if curpos is not a multiple of speed then shift the stored position to nearest multiple of speed.
+                        #as playback speed is a multiple of 5 anyway, quantize seems ok on it's own
                         if quantize:
-                            print(curpos)
-                            print(curpos%speed)
-                            if not curpos%speed:
-                                print(curpos)
-                                #in quantize mode, if you hit a sample right near the end, shift it to beginning
-                                if curpos >= 309:
-                                    curpos = startloop
-                                qpos = round_down(curpos,speed)
-                                print("position rounded down:", qpos)
-                                lastpos.append(qpos)
-                                print("position added:",lastpos[-1])
-                            
-                            else:
-                                lastpos.append(curpos)
-                        else:
-                            lastpos.append(curpos)
-
+                            #if not curpos%speed:
+                            #print(curpos)
+                            #in quantize mode, if you hit a sample right near the end, shift it to beginning
+                            if curpos >= 309:
+                                curpos = startloop
+                        lastpos.append(curpos)
                         key_indexs.append(key_index)
                         smptimepos = time.time()
                         smpstarted = smptimepos - start
